@@ -1,0 +1,61 @@
+seed: 42
+device: auto
+exp_name: stfd_traffic
+exp_version: "0.0.1"
+only_test: true
+load_model: true
+
+data:
+  dataset_name:  BJ_air
+  batch_size: 16
+  num_workers: 1
+  seq_len: 32
+  scale: 'standard'
+  mask_mode: 'node'
+  mask_ratio: 0.6
+  test_mask_ratio: 0.5
+  train_ratio: 0.7
+  val_ratio: 0.1
+
+model:
+  name: stfd_wo_freq
+  stfd_dim_feature: 3
+  stfd_dim_seq: 32
+  stfd_dim_node: 437
+  stfd_num_heads: 3
+  stfd_num_encoder_layers: 4
+  stfd_num_decoder_layers: 4
+  stfd_max_seq_len: 128
+  stfd_dim_feedforward: 256
+  stfd_dropout: 0.0
+  stfd_encoder_attention_type: separate
+  stfd_decoder_attention_type: temporal
+  stfd_mode: encoder_decoder
+  stfd_temporal_pos_embedding: sinusoidal
+  stfd_node_pos_embedding: laplacian
+  stfd_special_tokens_init: random
+  noise_schedule: linear
+  diffusion_steps: 1000
+
+optimizer:
+  optimizer_type: Adam
+  optimizer_params:
+    lr: 0.005
+  scheduler_enabled: true
+  scheduler_type: CosineAnnealingLR
+  scheduler_params:
+    T_max: 16
+  scheduler_interval: epoch
+  scheduler_monitor: train_loss
+  scheduler_frequency: 1
+
+train:
+  max_epochs: 5
+  early_stopping: false
+
+log:
+  log_dir: logs
+  enable_progress_bar: true
+  log_every_n_steps: 1
+  save_checkpoint: true
+  checkpoint_dir: 'data/models/variants/wo_freq/'
